@@ -29,6 +29,28 @@ const Header = () => {
           <button className="mobile-menu-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
+
+          {/* Desktop Navigation - Hidden on Mobile */}
+          <div className="desktop-actions">
+             <div className="nav-links">
+              {user && user.role === 'admin' && (
+                <Link to="/admin" className="nav-link">Dashboard</Link>
+              )}
+            </div>
+            
+            <div className="auth-actions">
+              {user ? (
+                <div className="user-menu">
+                  <span className="user-name"><User size={18}/> {user.name}</span>
+                  <button onClick={handleLogout} className="btn btn-secondary logout-btn">
+                    <LogOut size={16} /> Logout
+                  </button>
+                </div>
+              ) : (
+                <Link to="/admin" className="btn btn-primary">Admin Login</Link>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 

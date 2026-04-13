@@ -77,7 +77,31 @@
   cursor: pointer;
 }
 
+.desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.desktop-actions .logout-btn {
+  padding: 8px 20px;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 992px) {
+  .header-nav {
+    display: none !important;
+  }
+}
+
 @media (max-width: 991px) {
+  .desktop-actions {
+    display: none;
+  }
   .header-container {
     padding: 0 16px;
   }
