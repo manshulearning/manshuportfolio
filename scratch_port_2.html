@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f8;
+  }
+
+  /* FIXED LEFT SIDEBAR */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: #1f1f2e;
+    color: #cfcfe6;
+    padding: 20px 20px 80px; /* ✅ bottom padding */
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  padding: 10px;
+}
+
+  .section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #9da0ff;
+    margin-bottom: 10px;
+  }
+
+  .sections {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sections li {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sections li:hover,
+  .sections li.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  .badge {
+    font-size: 12px;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 7px;
+    border-radius: 12px;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 260px;
+    padding: 20px;
+    padding-bottom: 80px;
+    min-height: 100vh;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .thumb {
+    height: 150px;
+    background: #ddd;
+  }
+
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .title {
+    padding: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .footer {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    text-align: center;
+  }
+
+  .btn {
+    background: #7b5cff;
+    color: #fff;
+    padding: 7px 16px;
+    font-size: 13px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+
+  .btn:hover {
+    background: #5a43d1;
+  }
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+  <img src="assets/logo.png" alt="Company Logo">
+</div>
+  <div class="section-title">Sections</div>
+  <ul class="sections" id="sections">
+    <li data-section="all" class="active">All <span class="badge">0</span></li>
+  </ul>
+</aside>
+
+<main class="main">
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+/* ======================================================
+   EASY EDIT DATA — 36 SECTIONS × 3 VIDEOS EACH
+====================================================== */
+const sectionsData = {
+
+   "Samples Course": [
+    {title:"Samples Course 01", thumb:"assets/I_01.png", link:"Sections/Samples_01/story.html"},
+    {title:"Samples Course 02", thumb:"assets/I_02.png", link:"Sections/Samples_02/story.html"},
+    {title:"Samples Course 03", thumb:"assets/I_03.png", link:"Sections/Samples_03/story.html"},
+    {title:"Samples Course 04", thumb:"assets/I_04.png", link:"Sections/Samples_04/story.html"},
+    {title:"Samples Course 05", thumb:"assets/I_05.png", link:"Sections/Samples_05/story.html"},
+    {title:"Samples Course 06", thumb:"assets/I_06.png", link:"Sections/Samples_06/story.html"},
+    {title:"Samples Course 07", thumb:"assets/I_07.png", link:"Sections/Samples_07/story.html"}
+  ],
+
+  "Accordions": [
+    {title:"Accordions 01", thumb:"assets/Img_01.png", link:"Sections/Accordion_01/story.html"},
+    {title:"Accordions 02", thumb:"assets/Img_02.png", link:"Sections/Accordion_02/story.html"},
+    {title:"Accordions 03", thumb:"assets/Img_03.png", link:"Sections/Accordion_03/story.html"},
+    {title:"Accordions 04", thumb:"assets/Img_04.png", link:"Sections/Accordion_04/story.html"}
+  ],
+
+  "Activity": [
+    {title:"Activity_01", thumb:"assets/Img_02_01.png", link:"Sections/Activity_01/story.html"},
+    {title:"Activity_02", thumb:"assets/Img_02_02.png", link:"Sections/Activity_02/story.html"},
+    {title:"Activity_03", thumb:"assets/Img_02_03.png", link:"Sections/Activity_03/story.html"},
+    {title:"Activity_04", thumb:"assets/Img_02_04.png", link:"Sections/Activity_04/story.html"}
+  ],
+
+  "Animation": [
+    {title:"Animation_01", thumb:"assets/Img_03_01.png", link:"Sections/Animation_01/story.html"},
+    {title:"Animation_02", thumb:"assets/Img_03_02.png", link:"Sections/Animation_02/story.html"},
+    {title:"Animation_03", thumb:"assets/Img_03_03.png", link:"Sections/Animation_03/story.html"}
+  ],
+
+  "Assessment": [
+    {title:"Assessment_01", thumb:"assets/Img_04_01.png", link:"Sections/Assessment_01/story.html"}
+  ],
+
+  "Button Click and Learn": [
+    {title:"Button Click and Learn 01", thumb:"assets/Img_05_01.png", link:"Sections/Button_Click_and_Learn_01/story.html"}
+  ],
+
+  "Carousel": [
+    {title:"Carousel 01", thumb:"assets/Img_06_01.png", link:"Sections/Carousel_01/story.html"}
+  ],
+
+  "Drag and Drop": [
+    {title:"Drag and Drop 01", thumb:"assets/Img_07_01.png", link:"Sections/Drag_and_Drop_01/story.html"}
+  ],
+
+  "Flip Types": [
+    {title:"Flip Types 01", thumb:"assets/Img_08_01.png", link:"Sections/Flip_Types_01/story.html"}
+  ],
+
+  "Icon Click": [
+    {title:"Icon Click 01", thumb:"assets/Img_15_01.png", link:"Sections/Icon_Click_01/story.html"}
+  ],
+
+   "Image Click and Learn": [
+    {title:"Image Click and Learn 01", thumb:"assets/Img_16_01.png", link:"Sections/Image_Click_and_Learn_01/story.html"},
+    {title:"Image Click and Learn 02", thumb:"assets/Img_16_02.png", link:"Sections/Image_Click_and_Learn_02/story.html"}
+  ],
+  
+  "Knowledge Check": [
+    {title:"Knowledge Check 01", thumb:"assets/Img_09_01.png", link:"Sections/Knowledge_Check_01/story.html"}
+  ],
+
+  "Role Selection": [
+    {title:"Role Selection 01", thumb:"assets/Img_10_01.png", link:"Sections/Role_Selection_01/story.html"}
+  ],
+
+  "Sequence Drop Down": [
+    {title:"Sequence Drop Down 01", thumb:"assets/Img_11_01.png", link:"Sections/Sequence_Drop_Down_01/story.html"}
+  ],
+
+  "Slider": [
+    {title:"Slider 01", thumb:"assets/Img_12_01.png", link:"Sections/Slider_01/story.html"}
+  ],
+
+  "Timeline": [
+    {title:"Timeline 01", thumb:"assets/Img_13_01.png", link:"Sections/Timeline_01/story.html"}
+  ],
+  
+  "Welcome": [
+    {title:"Welcome 01", thumb:"assets/Img_14_01.png", link:"Sections/Welcome_01/story.html"}
+  ]
+
+};
+
+/* ============================
+   LOGIC (AUTO COUNTS)
+============================ */
+const sectionsEl = document.getElementById("sections");
+const grid = document.getElementById("grid");
+
+const allVideos = [];
+Object.keys(sectionsData).forEach(sec=>{
+  sectionsData[sec].forEach(v=>allVideos.push({...v, section:sec}));
+});
+
+Object.keys(sectionsData).forEach(sec=>{
+  const li = document.createElement("li");
+  li.dataset.section = sec;
+  li.innerHTML = `${sec} <span class="badge">${sectionsData[sec].length}</span>`;
+  sectionsEl.appendChild(li);
+});
+
+sectionsEl.querySelector('[data-section="all"] .badge').textContent = allVideos.length;
+
+function render(section){
+  grid.innerHTML = "";
+  const list = section === "all" ? allVideos : allVideos.filter(v=>v.section===section);
+  list.forEach(v=>{
+    grid.innerHTML += `
+      <div class="card">
+        <div class="thumb"><img src="${v.thumb}"></div>
+        <div class="title">${v.title}</div>
+        <div class="footer"><a class="btn" href="${v.link}" target="_blank" rel="noopener noreferrer">More Info</a></div>
+      </div>
+    `;
+  });
+}
+
+sectionsEl.addEventListener("click",e=>{
+  if(e.target.tagName!=="LI") return;
+  document.querySelectorAll(".sections li").forEach(li=>li.classList.remove("active"));
+  e.target.classList.add("active");
+  render(e.target.dataset.section);
+});
+
+render("all");
+</script>
+
+</body>
+</html>

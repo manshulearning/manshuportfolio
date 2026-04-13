@@ -1,0 +1,38 @@
+.footer {
+  background-color: #0f172a; /* Match Hero Section Navy */
+  padding: 60px 0;
+  margin-top: 0; /* Flush with content for premium look */
+  color: #ffffff;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.footer-logo {
+  height: 60px; /* High quality logo size */
+  object-fit: contain;
+}
+
+/* If the logo has its own white background or colors, we might need a custom class */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-brand p {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.footer-links p {
+  color: #64748b;
+  font-size: 0.9rem;
+}

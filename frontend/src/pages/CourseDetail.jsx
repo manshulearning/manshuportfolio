@@ -1,0 +1,150 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Play, FileText, Download, CheckCircle, Video, BookOpen, ChevronRight } from 'lucide-react';
+import './CourseDetail.css';
+
+const CourseDetail = () => {
+  const { id } = useParams();
+  const [course, setCourse] = useState(null);
+  const [curriculum, setCurriculum] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [courseRes, curriculumRes] = await Promise.all([
+          fetch(`/api/courses/${id}`),
+          fetch(`/api/courses/${id}/curriculum`)
+        ]);
+        
+        const courseData = await courseRes.json();
+        const curriculumData = await curriculumRes.json();
+        
+        setCourse(courseData);
+        setCurriculum(curriculumData);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  if (loading) return <div className="loader-container"><div className="loader"></div></div>;
+  if (!course) return <div className="error-container">Course not found</div>;
+
+  const totalSessions = curriculum.reduce((acc, mod) => acc + (mod.videos?.length || 0), 0);
+
+  return (
+    <div className="course-detail-page fade-in">
+      <div className="course-hero">
+        <div className="container hero-split">
+          <div className="course-info">
+             <span className="category-badge">{course.category}</span>
+             <h1>{course.title}</h1>
+             <p className="hero-desc">{course.description}</p>
+             
+             <div className="course-stats-mini">
+                <span className="stat-item"><Video size={16} /> {totalSessions} Sessions</span>
+                <span className="stat-item"><BookOpen size={16} /> {curriculum.length} Modules</span>
+             </div>
+
+             <div className="actions">
+                <Link to={`/play/${course._id}`} className="btn btn-primary btn-large start-btn">
+                  <Play size={20} fill="currentColor" /> Start Learning
+                </Link>
+                
+                {course.curriculum && (
+                  <a href={course.curriculum} target="_blank" rel="noopener noreferrer" className="btn btn-secondary curriculum-btn">
+                    <Download size={18} /> Download Syllabus
+                  </a>
+                )}
+             </div>
+          </div>
+
+          <div className="course-preview center">
+            <div className="preview-card glass-panel">
+                <div className="preview-img">
+                  {course.demoVideo ? (
+                    <video 
+                      src={course.demoVideo} 
+                      controls 
+                      className="preview-video" 
+                      poster={course.thumbnail}
+                    />
+                  ) : course.thumbnail ? (
+                    <img src={course.thumbnail} alt={course.title} />
+                  ) : (
+                    <div className="placeholder-img">No Preview</div>
+                  )}
+                </div>
+               <div className="preview-body">
+                  <Link to={`/play/${course._id}`} className="btn btn-primary btn-block">
+                    Get Started
+                  </Link>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="container detail-content-grid">
+          <div className="main-content-column">
+              <section className="about-section">
+                <h2>About this course</h2>
+                <div className="section-content">
+                  <p>{course.description}</p>
+                </div>
+              </section>
+
+              <section className="curriculum-section">
+                <div className="section-header-flex">
+                  <h2>Course Curriculum</h2>
+                  <span className="curriculum-meta">{curriculum.length} Modules • {totalSessions} Lessons</span>
+                </div>
+                
+                <div className="curriculum-list-preview">
+                  {curriculum.length > 0 ? (
+                    curriculum.map((module, mIdx) => (
+                      <div key={module._id} className="module-row-preview">
+                        <div className="module-row-header">
+                           <span className="module-count">Module {mIdx + 1}</span>
+                           <h3>{module.title}</h3>
+                        </div>
+                        <div className="module-sessions-preview">
+                           {module.videos?.map((session, sIdx) => (
+                             <div key={session._id} className="session-row-preview">
+                                <Play size={14} className="session-icon" />
+                                <span className="session-title">{session.title}</span>
+                                <span className="session-time">{session.duration ? Math.floor(session.duration/60) + 'm' : ''}</span>
+                             </div>
+                           ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="empty-curriculum">No modules added yet.</div>
+                  )}
+                </div>
+              </section>
+          </div>
+          
+          <aside className="side-content-column">
+              <div className="instructor-card glass-panel">
+                 <h4>Instructor</h4>
+                 <div className="instructor-info">
+                    <div className="avatar">M</div>
+                    <div>
+                      <p className="name">Manshu</p>
+                      <p className="title">Lead Instructor</p>
+                    </div>
+                 </div>
+              </div>
+          </aside>
+      </div>
+    </div>
+  );
+};
+
+export default CourseDetail;
