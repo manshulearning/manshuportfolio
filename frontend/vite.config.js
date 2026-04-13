@@ -7,8 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://manshuportfolio.onrender.com',
         changeOrigin: true,
+        secure: false,
         timeout: 600000, // 10 minutes
         proxyTimeout: 600000, // 10 minutes
       },
