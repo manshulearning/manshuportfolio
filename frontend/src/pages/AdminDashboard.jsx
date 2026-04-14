@@ -16,11 +16,9 @@ const AdminDashboard = () => {
   const [courses, setCourses] = useState([]);
   // Form stats
   const [courseFormData, setCourseFormData] = useState({
-    title: '', description: '', category: '', isPublic: true
+    title: '', category: '', isPublic: true, demoVideo: ''
   });
   const [thumbnail, setThumbnail] = useState(null);
-  const [demoVideo, setDemoVideo] = useState(null);
-  const [curriculum, setCurriculum] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -85,9 +83,9 @@ const AdminDashboard = () => {
     setEditingCourseId(course._id);
     setCourseFormData({
       title: course.title,
-      description: course.description,
       category: course.category,
-      isPublic: course.isPublic
+      isPublic: course.isPublic,
+      demoVideo: course.demoVideo || ''
     });
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,10 +94,8 @@ const AdminDashboard = () => {
   const cancelEdit = () => {
     setIsEditing(false);
     setEditingCourseId(null);
-    setCourseFormData({ title: '', description: '', category: '', isPublic: true });
+    setCourseFormData({ title: '', category: '', isPublic: true, demoVideo: '' });
     setThumbnail(null);
-    setDemoVideo(null);
-    setCurriculum(null);
     setIsNewCategory(false);
   };
 
@@ -121,12 +117,6 @@ const AdminDashboard = () => {
     if (thumbnail && thumbnail.size > FILE_SIZE_LIMITS.thumbnail) {
       return setError('Thumbnail size should be less than 5MB');
     }
-    if (demoVideo && demoVideo.size > FILE_SIZE_LIMITS.video) {
-      return setError('Demo video size should be less than 100MB');
-    }
-    if (curriculum && curriculum.size > FILE_SIZE_LIMITS.doc) {
-      return setError('Curriculum size should be less than 20MB');
-    }
 
     setLoading(true);
     setUploadProgress(0);
@@ -134,12 +124,10 @@ const AdminDashboard = () => {
     try {
       const formData = new FormData();
       formData.append('title', courseFormData.title);
-      formData.append('description', courseFormData.description);
       formData.append('category', courseFormData.category);
       formData.append('isPublic', courseFormData.isPublic);
+      formData.append('demoVideo', courseFormData.demoVideo);
       if (thumbnail) formData.append('thumbnail', thumbnail);
-      if (demoVideo) formData.append('demoVideo', demoVideo);
-      if (curriculum) formData.append('curriculum', curriculum);
 
       const xhr = new XMLHttpRequest();
       const method = isEditing ? 'PUT' : 'POST';
@@ -160,10 +148,8 @@ const AdminDashboard = () => {
       xhr.onload = () => {
         setLoading(false);
         if (xhr.status >= 200 && xhr.status < 300) {
-          setCourseFormData({ title: '', description: '', category: '', isPublic: true });
+          setCourseFormData({ title: '', category: '', isPublic: true, demoVideo: '' });
           setThumbnail(null);
-          setDemoVideo(null);
-          setCurriculum(null);
           setIsEditing(false);
           setEditingCourseId(null);
           setUploadProgress(0);
@@ -293,21 +279,18 @@ const AdminDashboard = () => {
                    </div>
                  )}
                </div>
-               <div className="form-group">
-                 <label>Description</label>
-                 <textarea value={courseFormData.description} onChange={e => setCourseFormData({...courseFormData, description: e.target.value})} required></textarea>
-               </div>
+                <div className="form-group">
+                  <label>Demo Video (Paste Link)</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. https://www.youtube.com/watch?v=..." 
+                    value={courseFormData.demoVideo} 
+                    onChange={e => setCourseFormData({...courseFormData, demoVideo: e.target.value})} 
+                  />
+                </div>
                 <div className="form-group">
                   <label>Thumbnail (Image)</label>
                   <input type="file" accept="image/*" onChange={e => setThumbnail(e.target.files[0])} />
-                </div>
-                <div className="form-group">
-                  <label>Demo Video</label>
-                  <input type="file" accept="video/*" onChange={e => setDemoVideo(e.target.files[0])} />
-                </div>
-                <div className="form-group">
-                  <label>Curriculum (PDF/Doc)</label>
-                  <input type="file" accept=".pdf,.doc,.docx,.zip" onChange={e => setCurriculum(e.target.files[0])} />
                 </div>
                 <div className="form-group checkbox-group">
                   <label>

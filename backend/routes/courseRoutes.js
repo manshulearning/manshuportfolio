@@ -11,8 +11,7 @@ const { upload } = require('../config/cloudinary');
 // @route   PUT /api/courses/:id
 router.put('/:id', protect, admin, upload.fields([
   { name: 'thumbnail', maxCount: 1 },
-  { name: 'demoVideo', maxCount: 1 },
-  { name: 'curriculum', maxCount: 1 }
+  { name: 'demoVideo', maxCount: 1 }
 ]), async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
@@ -20,25 +19,28 @@ router.put('/:id', protect, admin, upload.fields([
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    const { title, description, category, isPublic, password } = req.body;
+    const { title, category, isPublic, password, demoVideo } = req.body;
     
     course.title = title || course.title;
-    course.description = description || course.description;
+
     course.category = category || course.category;
     if (isPublic !== undefined) {
       course.isPublic = isPublic === 'true' || isPublic === true;
     }
     course.password = password !== undefined ? password : course.password;
+    
+    // Priority: Body (Link) > Uploaded File
+    if (demoVideo) {
+      course.demoVideo = demoVideo;
+    }
 
     if (req.files) {
       if (req.files['thumbnail'] && req.files['thumbnail'][0]) {
         course.thumbnail = req.files['thumbnail'][0].path;
       }
-      if (req.files['demoVideo'] && req.files['demoVideo'][0]) {
+      // If no link provided in body, check uploaded file
+      if (!demoVideo && req.files['demoVideo'] && req.files['demoVideo'][0]) {
         course.demoVideo = req.files['demoVideo'][0].path;
-      }
-      if (req.files['curriculum'] && req.files['curriculum'][0]) {
-        course.curriculum = req.files['curriculum'][0].path;
       }
     }
 
@@ -90,35 +92,29 @@ router.post('/', protect, admin, (req, res, next) => {
   console.log('Body data received:', req.body);
   console.log('Files received:', req.files ? Object.keys(req.files) : 'None');
   
-  const { title, description, category, isPublic, password } = req.body;
-  
-  try {
-    const shareableLink = crypto.randomBytes(8).toString('hex');
+    const { title, category, isPublic, password, demoVideo: bodyDemoVideo } = req.body;
     
-    // Extract file paths safely
-    let thumbnail = '';
-    let demoVideo = '';
-    let curriculum = '';
+    try {
+      const shareableLink = crypto.randomBytes(8).toString('hex');
+      
+      // Extract file paths safely
+      let thumbnail = '';
+      let demoVideo = bodyDemoVideo || ''; // Use link from body if provided
 
-    if (req.files) {
-      if (req.files['thumbnail'] && req.files['thumbnail'][0]) {
-        thumbnail = req.files['thumbnail'][0].path;
+      if (req.files) {
+        if (req.files['thumbnail'] && req.files['thumbnail'][0]) {
+          thumbnail = req.files['thumbnail'][0].path;
+        }
+        if (!demoVideo && req.files['demoVideo'] && req.files['demoVideo'][0]) {
+          demoVideo = req.files['demoVideo'][0].path;
+        }
       }
-      if (req.files['demoVideo'] && req.files['demoVideo'][0]) {
-        demoVideo = req.files['demoVideo'][0].path;
-      }
-      if (req.files['curriculum'] && req.files['curriculum'][0]) {
-        curriculum = req.files['curriculum'][0].path;
-      }
-    }
 
     const course = new Course({
       title,
-      description,
       category,
       thumbnail,
       demoVideo,
-      curriculum,
       isPublic: isPublic === 'true' || isPublic === true,
       password,
       shareableLink

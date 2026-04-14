@@ -6,10 +6,7 @@ const courseSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
-    },
+
     category: {
       type: String,
       required: true,
@@ -20,9 +17,7 @@ const courseSchema = mongoose.Schema(
     demoVideo: {
       type: String,
     },
-    curriculum: {
-      type: String,
-    },
+
     isPublic: {
       type: Boolean,
       default: true,

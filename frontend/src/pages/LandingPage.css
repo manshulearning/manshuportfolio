@@ -155,6 +155,20 @@
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.section-header:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.section-header:hover .view-all-link {
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .section-header h2 {
@@ -165,6 +179,8 @@
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
+
+
 
 .view-all-link {
   color: #ffffff;

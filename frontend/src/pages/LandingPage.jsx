@@ -70,10 +70,10 @@ const LandingPage = () => {
       {/* Featured Courses Section */}
       <section className="featured-courses">
         <div className="container">
-          <div className="section-header">
+          <Link to="/courses" className="section-header">
             <h2>Featured Courses</h2>
-            <Link to="/courses" className="view-all-link">View all</Link>
-          </div>
+            <span className="view-all-link">View all</span>
+          </Link>
           
           <div className="portfolio-grid">
             {featuredCourses.length > 0 ? (
@@ -98,7 +98,15 @@ const LandingPage = () => {
                     {course.title}
                   </div>
                   <div className="portfolio-footer">
-                     <Link to={`/course/${course._id}`} className="portfolio-btn">View Course</Link>
+                     {course.demoVideo ? (
+                       <a href={course.demoVideo} target="_blank" rel="noopener noreferrer" className="portfolio-btn">
+                         View Course
+                       </a>
+                     ) : (
+                       <Link to={`/course/${course._id}`} className="portfolio-btn">
+                         View Details
+                       </Link>
+                     )}
                   </div>
                 </motion.div>
               ))

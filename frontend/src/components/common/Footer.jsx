@@ -7,7 +7,6 @@ const Footer = () => {
       <div className="container footer-container">
         <div className="footer-brand">
           <img src="/logo_manshu.png" alt="Manshu Learning" className="logo-img footer-logo" />
-          <p>Premium EdTech Platform</p>
         </div>
         <div className="footer-links">
           <p>&copy; {new Date().getFullYear()} Manshu Learning. All rights reserved.</p>

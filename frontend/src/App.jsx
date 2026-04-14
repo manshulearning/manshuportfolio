@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import WhatsAppButton from './components/common/WhatsAppButton';
 import LandingPage from './pages/LandingPage';
 import AdminDashboard from './pages/AdminDashboard';
 import CourseList from './pages/CourseList';
@@ -25,6 +26,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <WhatsAppButton />
       </div>
     </Router>
   );
