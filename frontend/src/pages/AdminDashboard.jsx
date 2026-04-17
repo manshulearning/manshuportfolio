@@ -29,6 +29,17 @@ const AdminDashboard = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState(null);
 
+  // Password Change States
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordFormData, setPasswordFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
   // Get unique categories for dropdown
   const uniqueCategories = [...new Set(courses.map(c => c.category))].filter(Boolean);
 
@@ -179,6 +190,58 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (passwordFormData.newPassword !== passwordFormData.confirmPassword) {
+      return setPasswordError('New passwords do not match');
+    }
+
+    if (passwordFormData.newPassword.length < 6) {
+      return setPasswordError('Password must be at least 6 characters');
+    }
+
+    setPasswordLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/update-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: passwordFormData.currentPassword,
+          newPassword: passwordFormData.newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setPasswordSuccess('Password updated successfully');
+        setPasswordFormData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        setTimeout(() => {
+          setIsPasswordModalOpen(false);
+          setPasswordSuccess('');
+        }, 2000);
+      } else {
+        setPasswordError(data.message || 'Failed to update password');
+      }
+    } catch (err) {
+      console.error(err);
+      setPasswordError('An error occurred. Please try again.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   if (!user || user.role !== 'admin') {
     return (
       <div className="admin-login-container fade-in">
@@ -215,9 +278,84 @@ const AdminDashboard = () => {
         <div className="container">
           <div className="admin-header-flex">
             <h1>Admin Dashboard</h1>
-            <div className="stats-badge">
-              <span className="label">Total Courses</span>
-              <span className="count">{courses.length}</span>
+            <div className="header-actions">
+              <div className="password-popup-wrapper">
+                <button 
+                  className="btn btn-secondary btn-sm" 
+                  onClick={() => setIsPasswordModalOpen(true)}
+                >
+                  Change Password
+                </button>
+                
+                {isPasswordModalOpen && (
+                  <div className="password-popup-content glass-panel fade-in">
+                    <div className="modal-header">
+                      <h3>Change Admin Password</h3>
+                      <button className="close-btn" onClick={() => setIsPasswordModalOpen(false)}>
+                        <X size={20} />
+                      </button>
+                    </div>
+                    
+                    <form onSubmit={handleUpdatePassword} className="admin-form">
+                      {passwordError && <div className="error-message">{passwordError}</div>}
+                      {passwordSuccess && <div className="success-message">{passwordSuccess}</div>}
+                      
+                      <div className="form-group">
+                        <label>Current Password</label>
+                        <input 
+                          type="password" 
+                          value={passwordFormData.currentPassword} 
+                          onChange={e => setPasswordFormData({...passwordFormData, currentPassword: e.target.value})} 
+                          required
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>New Password</label>
+                        <input 
+                          type="password" 
+                          value={passwordFormData.newPassword} 
+                          onChange={e => setPasswordFormData({...passwordFormData, newPassword: e.target.value})} 
+                          required
+                          placeholder="Min 6 characters"
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>Confirm New Password</label>
+                        <input 
+                          type="password" 
+                          value={passwordFormData.confirmPassword} 
+                          onChange={e => setPasswordFormData({...passwordFormData, confirmPassword: e.target.value})} 
+                          required
+                        />
+                      </div>
+                      
+                      <div className="modal-footer">
+                        <button 
+                          type="button" 
+                          className="btn btn-secondary" 
+                          onClick={() => setIsPasswordModalOpen(false)}
+                          disabled={passwordLoading}
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          type="submit" 
+                          className="btn btn-primary" 
+                          disabled={passwordLoading}
+                        >
+                          {passwordLoading ? 'Updating...' : 'Update Password'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
+              <div className="stats-badge">
+                <span className="label">Total Courses</span>
+                <span className="count">{courses.length}</span>
+              </div>
             </div>
           </div>
 
@@ -371,3 +509,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

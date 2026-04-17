@@ -28,6 +28,15 @@
   text-align: center;
 }
 
+.success-message {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -99,6 +108,12 @@
   margin: 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .stats-badge {
   display: flex;
   align-items: center;
@@ -109,6 +124,7 @@
   gap: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 
 .stats-badge .label {
   font-size: 0.9rem;
@@ -476,4 +492,94 @@
     background: rgba(13, 148, 136, 0.2);
     text-decoration: none;
 }
+
+/* Password Popup Specifics */
+.password-popup-wrapper {
+  position: relative;
+}
+
+.password-popup-content {
+  position: absolute;
+  top: calc(100% + 15px);
+  right: 0;
+  width: 450px;
+  z-index: 1000;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0f172a !important;
+}
+
+.password-popup-content .modal-header {
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.password-popup-content .modal-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.password-popup-content .admin-form {
+  padding: 24px;
+  margin-top: 0;
+}
+
+.password-popup-content .modal-footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.password-popup-content .close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.password-popup-content .close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .password-popup-content {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90% !important;
+    max-width: 400px !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+    background: #0f172a !important;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .password-popup-content .modal-header h3 {
+    font-size: 1.1rem;
+  }
+}
+
+
+
 
