@@ -210,146 +210,148 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard fade-in">
-      <div className="container">
-        <div className="admin-header-flex">
-          <h1>Admin Dashboard</h1>
-          <div className="stats-badge">
-            <span className="label">Total Courses</span>
-            <span className="count">{courses.length}</span>
+    <>
+      <div className="admin-dashboard fade-in">
+        <div className="container">
+          <div className="admin-header-flex">
+            <h1>Admin Dashboard</h1>
+            <div className="stats-badge">
+              <span className="label">Total Courses</span>
+              <span className="count">{courses.length}</span>
+            </div>
           </div>
-        </div>
 
-        <div className="dashboard-content">
-          <div className="create-section glass-panel">
-            <div className="section-header navy-bar">
-              <h3>{isEditing ? 'EDIT COURSE' : 'CREATE COURSE'}</h3>
-              {isEditing && (
-                <button className="btn btn-sm btn-secondary" onClick={cancelEdit}>
-                  <Plus size={16} /> New Course
-                </button>
+          <div className="dashboard-content">
+            <div className="create-section glass-panel">
+              <div className="section-header navy-bar">
+                <h3>{isEditing ? 'EDIT COURSE' : 'CREATE COURSE'}</h3>
+                {isEditing && (
+                  <button className="btn btn-sm btn-secondary" onClick={cancelEdit}>
+                    <Plus size={16} /> New Course
+                  </button>
+                )}
+              </div>
+               <form onSubmit={handleCreateCourse} className="admin-form">
+                 <div className="form-group">
+                   <label>Title</label>
+                   <input type="text" value={courseFormData.title} onChange={e => setCourseFormData({...courseFormData, title: e.target.value})} required/>
+                 </div>
+                 <div className="form-group">
+                   <label>Category</label>
+                   {!isNewCategory ? (
+                     <select 
+                       value={courseFormData.category} 
+                       onChange={(e) => {
+                         if (e.target.value === 'ADD_NEW') {
+                           setIsNewCategory(true);
+                           setCourseFormData({...courseFormData, category: ''});
+                         } else {
+                           setCourseFormData({...courseFormData, category: e.target.value});
+                         }
+                       }}
+                       required
+                     >
+                       <option value="">Select Category</option>
+                       {uniqueCategories.map(cat => (
+                         <option key={cat} value={cat}>{cat}</option>
+                       ))}
+                       <option value="ADD_NEW">+ Add New Category</option>
+                     </select>
+                   ) : (
+                     <div className="new-category-input">
+                       <input 
+                         type="text" 
+                         value={courseFormData.category} 
+                         placeholder="Enter new category name"
+                         onChange={e => setCourseFormData({...courseFormData, category: e.target.value})} 
+                         required
+                         autoFocus
+                       />
+                       <button 
+                         type="button" 
+                         className="btn-text" 
+                         onClick={() => {
+                           setIsNewCategory(false);
+                           setCourseFormData({...courseFormData, category: ''});
+                         }}
+                       >
+                         <X size={14} /> Cancel
+                       </button>
+                     </div>
+                   )}
+                 </div>
+                  <div className="form-group">
+                    <label>Demo Video (Paste Link)</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. https://www.youtube.com/watch?v=..." 
+                      value={courseFormData.demoVideo} 
+                      onChange={e => setCourseFormData({...courseFormData, demoVideo: e.target.value})} 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Thumbnail (Image)</label>
+                    <input type="file" accept="image/*" onChange={e => setThumbnail(e.target.files[0])} />
+                  </div>
+                  <div className="form-group checkbox-group">
+                    <label>
+                      <input type="checkbox" checked={courseFormData.isPublic} onChange={e => setCourseFormData({...courseFormData, isPublic: e.target.checked})}/>
+                      Public Course
+                    </label>
+                  </div>
+                  <button type="submit" className="btn btn-primary" disabled={loading}>
+                    {loading ? 'Processing...' : (isEditing ? 'Update Course' : 'Create Course')}
+                  </button>
+                  
+                  {loading && (
+                    <div className="upload-progress-container">
+                      <div className="progress-bar-wrapper">
+                        <div 
+                          className="progress-bar-fill" 
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                      <div className="progress-status">
+                        {uploadProgress < 100 
+                          ? `Uploading: ${uploadProgress}%` 
+                          : 'Finalizing course (Cloudinary)...'}
+                      </div>
+                    </div>
+                  )}
+               </form>
+            </div>
+
+            <div className="courses-list glass-panel">
+              <h3>Manage Courses</h3>
+              {courses.length > 0 ? (
+                <ul className="admin-list">
+                  {courses.map(course => (
+                    <li key={course._id} className="admin-list-item">
+                      <div className="course-item-info">
+                        <strong>{course.title}</strong>
+                        <span className="badge">{course.isPublic ? 'Public' : 'Private'}</span>
+                      </div>
+                      <div className="course-item-actions">
+                        <button className="icon-btn" title="Edit" onClick={() => handleEdit(course)}>
+                          <Edit size={18} />
+                        </button>
+                        <button className="icon-btn delete" title="Delete" onClick={() => handleDeleteCourse(course._id)}>
+                          <Trash size={18} />
+                        </button>
+                        <button 
+                          className="btn btn-secondary btn-sm"
+                          onClick={() => navigate(`/admin/course/${course._id}/content`)}
+                        >
+                          Manage Content
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                 <p>No courses created yet.</p>
               )}
             </div>
-             <form onSubmit={handleCreateCourse} className="admin-form">
-               <div className="form-group">
-                 <label>Title</label>
-                 <input type="text" value={courseFormData.title} onChange={e => setCourseFormData({...courseFormData, title: e.target.value})} required/>
-               </div>
-               <div className="form-group">
-                 <label>Category</label>
-                 {!isNewCategory ? (
-                   <select 
-                     value={courseFormData.category} 
-                     onChange={(e) => {
-                       if (e.target.value === 'ADD_NEW') {
-                         setIsNewCategory(true);
-                         setCourseFormData({...courseFormData, category: ''});
-                       } else {
-                         setCourseFormData({...courseFormData, category: e.target.value});
-                       }
-                     }}
-                     required
-                   >
-                     <option value="">Select Category</option>
-                     {uniqueCategories.map(cat => (
-                       <option key={cat} value={cat}>{cat}</option>
-                     ))}
-                     <option value="ADD_NEW">+ Add New Category</option>
-                   </select>
-                 ) : (
-                   <div className="new-category-input">
-                     <input 
-                       type="text" 
-                       value={courseFormData.category} 
-                       placeholder="Enter new category name"
-                       onChange={e => setCourseFormData({...courseFormData, category: e.target.value})} 
-                       required
-                       autoFocus
-                     />
-                     <button 
-                       type="button" 
-                       className="btn-text" 
-                       onClick={() => {
-                         setIsNewCategory(false);
-                         setCourseFormData({...courseFormData, category: ''});
-                       }}
-                     >
-                       <X size={14} /> Cancel
-                     </button>
-                   </div>
-                 )}
-               </div>
-                <div className="form-group">
-                  <label>Demo Video (Paste Link)</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. https://www.youtube.com/watch?v=..." 
-                    value={courseFormData.demoVideo} 
-                    onChange={e => setCourseFormData({...courseFormData, demoVideo: e.target.value})} 
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Thumbnail (Image)</label>
-                  <input type="file" accept="image/*" onChange={e => setThumbnail(e.target.files[0])} />
-                </div>
-                <div className="form-group checkbox-group">
-                  <label>
-                    <input type="checkbox" checked={courseFormData.isPublic} onChange={e => setCourseFormData({...courseFormData, isPublic: e.target.checked})}/>
-                    Public Course
-                  </label>
-                </div>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
-                  {loading ? 'Processing...' : (isEditing ? 'Update Course' : 'Create Course')}
-                </button>
-                
-                {loading && (
-                  <div className="upload-progress-container">
-                    <div className="progress-bar-wrapper">
-                      <div 
-                        className="progress-bar-fill" 
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
-                    </div>
-                    <div className="progress-status">
-                      {uploadProgress < 100 
-                        ? `Uploading: ${uploadProgress}%` 
-                        : 'Finalizing course (Cloudinary)...'}
-                    </div>
-                  </div>
-                )}
-             </form>
-          </div>
-
-          <div className="courses-list glass-panel">
-            <h3>Manage Courses</h3>
-            {courses.length > 0 ? (
-              <ul className="admin-list">
-                {courses.map(course => (
-                  <li key={course._id} className="admin-list-item">
-                    <div className="course-item-info">
-                      <strong>{course.title}</strong>
-                      <span className="badge">{course.isPublic ? 'Public' : 'Private'}</span>
-                    </div>
-                    <div className="course-item-actions">
-                      <button className="icon-btn" title="Edit" onClick={() => handleEdit(course)}>
-                        <Edit size={18} />
-                      </button>
-                      <button className="icon-btn delete" title="Delete" onClick={() => handleDeleteCourse(course._id)}>
-                        <Trash size={18} />
-                      </button>
-                      <button 
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => navigate(`/admin/course/${course._id}/content`)}
-                      >
-                        Manage Content
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-               <p>No courses created yet.</p>
-            )}
           </div>
         </div>
       </div>
@@ -364,7 +366,7 @@ const AdminDashboard = () => {
           setCourseToDelete(null);
         }}
       />
-    </div>
+    </>
   );
 };
 

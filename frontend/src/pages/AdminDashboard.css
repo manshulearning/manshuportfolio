@@ -184,6 +184,28 @@
 
 .admin-list {
   margin-top: 20px;
+  max-height: 450px; /* Limits vertical length */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom Scrollbar for Admin List */
+.admin-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.admin-list::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 10px;
+}
+
+.admin-list::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
 }
 
 .admin-list-item {
@@ -231,6 +253,19 @@
 .icon-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
   color: var(--accent-color);
+}
+
+.course-item-actions .btn-secondary {
+  background-color: #f1f5f9;
+  color: #475569 !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
+.course-item-actions .btn-secondary:hover {
+  background-color: #e2e8f0;
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color);
 }
 
 .icon-btn.delete:hover {

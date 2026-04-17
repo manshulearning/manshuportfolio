@@ -47,6 +47,17 @@
   min-width: 140px;
 }
 
+.confirm-modal-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+}
+
+.confirm-modal-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
 .btn-danger {
   background: #ef4444;
   color: white;
