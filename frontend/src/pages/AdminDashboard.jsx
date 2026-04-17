@@ -7,7 +7,7 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const { user, login } = useContext(AuthContext);
-  const navigate = useNavigate();
+const navigate = useNavigate();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
